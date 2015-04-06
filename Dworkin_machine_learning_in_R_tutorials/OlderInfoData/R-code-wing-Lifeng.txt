@@ -1,0 +1,194 @@
+sam1<-read.table("d:\\wings\\Sam_10514_Sam_M_Rep 1.txt")
+sam2<-read.table("d:\\wings\\Sam_10514_Sam_M_Rep 2.txt")
+samw1<-read.table("d:\\wings\\Samw_Sam_Sam_M_rep1.txt")
+samw2<-read.table("d:\\wings\\Samw_Sam_Sam_M_rep2.txt")
+
+x <- rbind(as.matrix(sam1[,-(1:2)]),as.matrix(sam2[,-1]),as.matrix(samw1[,-1]),as.matrix(samw2[,-1]))
+
+y<-c(rep(0,21),rep(0,21),rep(1,23),rep(1,22))
+
+
+#1. SVM features
+
+library(e1071)
+
+index <- 1:nrow(x)
+
+test <- sample(index, trunc(length(index)/3))
+
+model <- svm(x[-test,],y[-test], method = "C-classification", kernel = "radial", cost = 10, gamma = 0.1)
+
+pred <- predict(model, x[test,])
+
+cor(pred,y[test])
+
+genotype <- factor( y[test] )
+
+fit <- aov(pred ~ genotype)
+
+summary(fit)
+
+model2 <- svm(x[-test,],y[-test], method = "C-classification", kernel = "linear", cost = 10)
+
+pred2 <- predict(model2, x[test,])
+
+
+cor(pred,y[test])
+
+cor(pred2,y[test])
+
+
+#2. PCA features
+
+pcr <- prcomp(x,retx=TRUE)
+
+pcr$sdev/sum(pcr$sdev)
+
+features <- pcr$x
+
+fit <- aov(features[,1] ~ factor(y))
+
+summary(fit)
+ 
+plot(features[,1:2])
+
+points(features[1:42,1:2],pch="1")
+points(features[43:87,1:2],pch="2")
+
+
+#3. Polygon features.
+
+polygon1<-c(1,2,7)
+polygon2<-c(2,6,12,7)
+polygon3<-c(6,8,13,12)
+polygon4<-c(8,9,10,14,13)
+polygon5<-c(5,11,10,9)
+polygon6<-c(10,11,15,14)
+polygon7<-c(4,15,11,5)
+
+feature <- function( x , indx )
+{
+
+poly.f <- rep(0,nrow(x))
+
+for(i in 1:nrow(x) )
+{
+mat <- matrix( x[i,], nrow=2)[,indx]
+
+diameter <- max(   t ( -2* t(mat)%*%mat + apply(mat^2,2,sum) ) + apply(mat^2,2,sum) )
+
+
+cycle.mat<- cbind( mat, mat[,1] )
+
+area<-0
+
+for(k in 1:ncol(mat) )
+{
+area <- area + det( cycle.mat[,c(k,k+1)] )
+}
+
+poly.f[i]<- area/diameter^2
+
+}
+
+return(poly.f)
+
+}
+
+features <- cbind( feature(x,polygon1), feature(x,polygon2), feature(x,polygon3), feature(x,polygon4), feature(x,polygon5), feature(x,polygon6), feature(x,polygon7)   )
+
+for( k in 1:8)
+{
+
+fit <- aov(features[,k] ~ factor(y) )
+
+print(summary(fit))
+
+}
+
+par(mfrow=c(2,4))
+
+for( k in 1:8)
+{
+
+boxplot(features[,k] ~ factor(y) )
+
+}
+
+
+par(mfrow=c(1,1))
+
+#4 SVM-RFE
+
+source("d:\\wings\\SVM-RFE.R")
+
+all.feat <- cbind( features )
+
+re <-  svmRFE( cbind(y,all.feat) , k=1 )
+
+cv<-rep(0,length(re))
+
+for( k in 1:length(re) )
+{
+a <- svm( all.feat[,re[1:k] ],factor(y), method = "C-classification", kernel = "linear", cost=10, cross=10)
+
+cv[k] = a$tot.accuracy
+
+
+}
+
+plot(1:length(re),cv)
+
+re
+
+
+#5 Try
+
+library("EBImage")
+
+sam1 = array(,c(1360, 1024,22))
+
+for(i in 1:22)
+{
+   sam1[,,i] = readImage(paste('d:\\wings\\Sam_10514_Sam_', i , " rep 1.tif", sep="") )
+}
+
+
+sam2 = array(,c(1360, 1024,21))
+
+for(i in 1:21)
+{
+   sam2[,,i] = readImage(paste('d:\\wings\\Sam_10514_Sam_', i , " rep 2.tif", sep="") )
+}
+
+
+
+samw1 = array(,c(1360, 1024,23))
+
+for(i in 1:9)
+{
+   samw1[,,i] = readImage(paste('d:\\wings\\Samw_Sam_Sam_M_rep1_0', i , ".tif", sep="") )
+}
+for(i in 10:23)
+{
+   samw1[,,i] = readImage(paste('d:\\wings\\Samw_Sam_Sam_M_rep1_', i , ".tif", sep="") )
+}
+
+
+samw2 = array(,c(1360, 1024,22))
+
+for(i in 1:9)
+{
+   samw2[,,i] = readImage(paste('d:\\wings\\Samw_Sam_Sam_M_rep1_0', i , ".tif", sep="") )
+}
+for(i in 10:22)
+{
+   samw2[,,i] = readImage(paste('d:\\wings\\Samw_Sam_Sam_M_rep1_', i , ".tif", sep="") )
+}
+
+#setwd("D:\\wings")
+#a<-list.files()
+#a
+
+
+

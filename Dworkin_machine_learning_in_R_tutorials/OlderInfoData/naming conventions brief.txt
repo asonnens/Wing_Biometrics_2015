@@ -1,0 +1,16 @@
+Naming  conventions
+
+Sam_10514_Sam_1 rep 1
+Samw_Sam_Sam_M_rep2_01
+
+For this example I have only given two genotypes the wild type (Samw_Sam_Sam) and the mutant (with 10514)
+
+
+The first Sam or Samw i just a note for the genetic background used in this study.
+
+ The second two (which will have either Sam or a number) will represent whether the chromosome is wild-type (Sam) or mutant (each number represents a particular mutation).
+
+M is for male
+
+rep1 VS rep2 are two seperate biological replicates.
+

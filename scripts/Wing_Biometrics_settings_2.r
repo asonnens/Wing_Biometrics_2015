@@ -69,6 +69,8 @@ strata_2var <- function(dataset, variable_name, variable_table, percentage, vari
   return(my_train_test_info)
 }
 
+#creating testing and training sets, genotype
+#########################################################################################
 strata_5var <- function(dataset, variable_name, variable_table, percentage, variable_pos, dataframe_length = 162){
 #this function stratifies a dataset by five variables, 
 #and makes testing and training sets based on the strata

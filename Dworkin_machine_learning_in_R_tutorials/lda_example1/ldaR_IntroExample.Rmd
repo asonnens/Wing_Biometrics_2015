@@ -1,0 +1,130 @@
+# A brief tutorial into 'classification' analyses (lda, qda,...)
+
+This is a brief tutorial into classifiying observations into classes for purposes of future predictions. In particular we will utilize so-called **supervised learning** approaches like _linear discriminants analysis_ (lda) quadratic discriminants analysis (qda) and a number of other approaches.
+
+First we call the libraries we want to use
+```{r libraries}
+require(MASS) # contains lda() and qda() functions
+```
+
+Now we read in data. Here we are using 15, 2-dimensional landmarks on *Drosophila* wings
+```{r data}
+wings <- read.csv("~/Dropbox/WingBiometrics2014/PredationWingsALL.csv", h=T)
+```
+
+### Some notes on this data.
+1. The landmarks were acquired "manually" from images using the ImageJ plug-in from Chris Klingenberg. This is not the 58 dimensional data (landmarks and semi-landmarks) from the semi-automated [wing machine](http://bio.fsu.edu/~dhoule/Software/) software from the lab of Dr. David Houle that we normally use these days (2008-present).
+2. These images are from an analysis of phenotypic selection of juvenile mantids on *Drosophila melanogaster*.
+3. For the purposes of this overview, we only care about the shape data and sex of flies. We are going to ignore other variables (like survivorship)
+4. Side refers to Left, Right or unknown (from wings that fell off when the flies were being eaten by predator). We should take care of this to avoid pseudo-replication, but for the moment we will ignore it for the moment, but will come back to it. Do not ignore it for a real analysis.
+5. Since we are starting by examining sex, we should also include size as variable, or at least use size corrected shape variables. Again, for the purposes of getting this all started, we are ignoring it.
+
+
+Let's look at the structure of the data object.
+```{r}
+str(wings)
+```
+
+In particular we are interested in how many observations we have for each sex.
+```{r}
+table(wings$Sex)
+```
+So we have `r table(wings$Sex)[1]` females and `r table(wings$Sex)[2]` males in this data set.
+
+## linear discriminant analysis.
+
+Normally we would start by subsetting the data into a 'training' set and a 'validation set'. We will do that below, but first let's go over some of the basics.
+
+For convenience and clarity I am seperating out the left and right hand sides of the equation. There are other ways of doing this as well. Keep in mind that for linear discrimant analysis the left and right hand side of the equation are 'reversed' relative to a general linear model. THat is the categorical variable is now on the LHS.
+
+Putting together right hand side of the model (to make life easier for inputting)
+```{r RHS}
+RHS <- paste("ProcCoord", 1:26, sep="", collapse= " + ")
+```
+It is worth taking a look at what has been output
+```{r RHSoutput}
+RHS
+```
+
+Now we put this all together into a formula
+```{r LHS}
+DiscrimEqn <- as.formula(paste("Sex ~ ", RHS, sep="", collapse=""))
+```
+Once again let's take a look at it
+
+```{r LHSout}
+DiscrimEqn
+```
+
+#### Now we perform the lda
+ 
+For the same model, we will need to run it twice. For some reason when we set the cross-validation flag to CV=T, it does not provide the vector of discriminations 
+```{r lda}
+linDiscrim_0 <- lda(DiscrimEqn, data = wings, CV=F)
+```
+
+Since the supervised variable we are interested in (sex) has only two levels, the lda will only produce one vector that discriminantes (we are only discriminating in a single dimension).
+
+```{r lda_scaling}
+linDiscrim_0$scaling
+```
+
+We run the same model, only this time with CV=T.
+
+```{r lda_1}
+linDiscrim_1 <- lda(DiscrimEqn, data = wings, CV=T)
+```
+
+Note that we set flag for cross validation to TRUE. This is simply leave-one-out cross-validation, which evaluates the predictive performance, but it is not as good as a true training and test set like we will perform later.
+
+We can look at the calls for the classifications (not true sex of fly, but what lda is calling it).
+```{r lda_classification}
+linDiscrim_1$class
+```
+and the posterior probabilities for the classifications (we have not specified a prior, so it is flat by default I believe). Here we will just look at the first and last 10 observations.
+
+```{r lda_posterior}
+head(linDiscrim_1$posterior, n=10)
+tail(linDiscrim_1$posterior, n=10)
+```
+
+We can ask which ones did lda classify correctly, as compared to the true sex.
+
+```{r lda_correct}
+linDiscrim_1$class == wings$Sex
+```
+
+Importantly we can ask what proportion were correctly identified this way. Again, keep in mind this only used leave-one-out cross-validation, so it is probably not sufficient.
+
+```{r lda_prob_correct}
+prob_correct <- sum(linDiscrim_1$class == wings$Sex)/length(wings$Sex)
+prob_correct  
+```
+So the lda with 1-fold cross-validation gives us `r 100*prob_correct` percent correct identification.
+
+## Below I am just checking some of the math. It can be ignored for now
+
+Computing the discriminant function coefficient vector, a For the two group problem.
+First compute means for males and females
+
+```{r vectors}
+males <- wings[wings$Sex=="M",9:34]
+females <- wings[wings$Sex=="F",9:34]
+male.means <- colMeans(males)
+female.means <- colMeans(females)
+```
+
+Calculate pooled covariance matrix
+```{r VCV}
+pooled.cov <- cov(wings[, 9:34]) # This is S
+S.inv <- solve(pooled.cov) # If you set the tolerance too low, all hell breaks loose, so for this example I am using a covariance matrix of full rank,
+```
+
+Now compute the discriminant function coefficient vector, a = S[-1]
+```{r disc_vec}
+a = S.inv %*% (male.means - female.means)
+
+# rescaling it to compare to the original vector
+a.prime = a*(34.488708/31.918649)
+cbind(a.prime,linDiscrim_0$scaling)
+```

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Extending &ldquo;classification&rdquo; approaches with lda, qda, etc..</title>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h2>Extending &ldquo;classification&rdquo; approaches with lda, qda, etc..</h2>
+
+<p>Author: Ian Dworkin. Created: April 14/2014</p>
+
+<p>This continues on from the first tutoria into classifiying observations into classes for purposes of future predictions. In particular we will utilize so-called <strong>supervised learning</strong> approaches like <em>linear discriminants analysis</em> (lda) <em>quadratic discriminants analysis</em> (qda) and a number of other approaches like <em>support vector machines</em> (svm) and non-parametric lda (mda). For all of this I am more or less using the approach from <em>R in a nutshell</em> by Joseph Adler (chapter 21). It is a useful <code>R</code> reference. </p>
+
+<p>In addition (and unlike the first tutorial), I will be subsetting the data into a training and testing partitions.</p>
+
+<p>First we call the libraries we want to use (note I am not making any statements of which ones to use, just demonstrating performance on a very specific datasets).</p>
+
+<pre><code class="r">require(MASS)  # contains lda() and qda() functions
+require(sampling)  # easier way to generate subsets of data
+require(mda)  # flexible discriminant analysis and mixture discrimant analysis
+require(class)  # k nearest neighbours (knn)
+# require(rpart) # Classification and regression trees (CART)
+require(adabag)  # bagging()
+require(ada)  # boosting function, ada()
+require(nnet)  # neural net function, nnet()
+require(e1071)  # svm()
+require(randomForest)  # randomForest() 
+</code></pre>
+
+<p>Now we read in data. Here we are using 15, 2-dimensional landmarks on <em>Drosophila</em> wings</p>
+
+<pre><code class="r">wings &lt;- read.csv(&quot;~/Dropbox/WingBiometrics2014/PredationWingsALL.csv&quot;, h = T)
+</code></pre>
+
+<h3>Notes on this data.</h3>
+
+<ol>
+<li>The landmarks were acquired &ldquo;manually&rdquo; from images using the ImageJ plug-in from Chris Klingenberg. This is not the 58 dimensional data (landmarks and semi-landmarks) from the semi-automated <a href="http://bio.fsu.edu/%7Edhoule/Software/">wing machine</a> software from the lab of Dr. David Houle that we normally use these days (2008-present).</li>
+<li>These images are from an analysis of phenotypic selection of juvenile mantids on <em>Drosophila melanogaster</em>.</li>
+<li>For the purposes of this overview, we only care about the shape data and sex of flies. We are going to ignore other variables (like survivorship)</li>
+<li>Side refers to Left, Right or unknown (from wings that fell off when the flies were being eaten by predator). We should take care of this to avoid pseudo-replication, but for the moment we will ignore it for the moment, but will come back to it. Do not ignore it for a real analysis.</li>
+<li>Since we are starting by examining sex, we should also include size as variable, or at least use size corrected shape variables. Again, for the purposes of getting this all started, we are ignoring it.
+6.Importanly, since we are using procrustes superimposed data that has been registered (centered) and scaled to centroid size, we only have 26 dimensions, despite having thirty variables. Thus we need to extract the first 26 principal components from the shape data (which contains <strong>ALL</strong> the information)</li>
+</ol>
+
+<p>Let&#39;s look at the structure of the data object.</p>
+
+<pre><code class="r">str(wings)
+</code></pre>
+
+<pre><code>## &#39;data.frame&#39;:    988 obs. of  38 variables:
+##  $ Unique_ID        : Factor w/ 971 levels &quot;G4_F_C_1_U&quot;,&quot;G4_F_C_10_U&quot;,..: 81 82 83 84 85 86 87 88 89 90 ...
+##  $ Population       : Factor w/ 3 levels &quot;G4&quot;,&quot;G9&quot;,&quot;S4&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ Sex              : Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Treatment        : Factor w/ 3 levels &quot;C&quot;,&quot;D&quot;,&quot;S&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Individual       : int  1 1 2 2 3 3 4 4 5 5 ...
+##  $ Side             : Factor w/ 3 levels &quot;L&quot;,&quot;R&quot;,&quot;U&quot;: 1 2 1 2 1 2 1 2 1 2 ...
+##  $ Centroid.Size    : num  2.28 2.28 2.6 2.59 2.78 ...
+##  $ Log.Centroid.Size: num  0.823 0.823 0.954 0.952 1.021 ...
+##  $ ProcCoord1       : num  0.25 0.249 0.249 0.248 0.25 ...
+##  $ ProcCoord2       : num  0.0697 0.0693 0.0688 0.0691 0.0687 ...
+##  $ ProcCoord3       : num  0.239 0.241 0.239 0.241 0.241 ...
+##  $ ProcCoord4       : num  0.0227 0.0239 0.0225 0.0227 0.0231 ...
+##  $ ProcCoord5       : num  0.267 0.266 0.269 0.268 0.267 ...
+##  $ ProcCoord6       : num  -0.00989 -0.00954 -0.01114 -0.01197 -0.00808 ...
+##  $ ProcCoord7       : num  0.206 0.206 0.207 0.208 0.208 ...
+##  $ ProcCoord8       : num  -0.0543 -0.0529 -0.0541 -0.0534 -0.0551 ...
+##  $ ProcCoord9       : num  0.198 0.198 0.198 0.199 0.197 ...
+##  $ ProcCoord10      : num  -0.031 -0.0317 -0.0316 -0.0319 -0.0325 ...
+##  $ ProcCoord11      : num  0.173 0.171 0.168 0.168 0.17 ...
+##  $ ProcCoord12      : num  0.0234 0.0241 0.0252 0.0248 0.0251 ...
+##  $ ProcCoord13      : num  0.138 0.138 0.141 0.141 0.135 ...
+##  $ ProcCoord14      : num  0.0877 0.0887 0.0861 0.0872 0.0861 ...
+##  $ ProcCoord15      : num  0.0522 0.0566 0.062 0.0652 0.0664 ...
+##  $ ProcCoord16      : num  0.0214 0.0215 0.0208 0.0214 0.0199 ...
+##  $ ProcCoord17      : num  0.0533 0.0552 0.0647 0.0658 0.0689 ...
+##  $ ProcCoord18      : num  -0.00409 -0.00452 -0.00366 -0.00254 -0.00355 ...
+##  $ ProcCoord19      : num  -0.0809 -0.084 -0.0891 -0.0915 -0.086 ...
+##  $ ProcCoord20      : num  -0.0304 -0.0338 -0.0277 -0.0269 -0.0302 ...
+##  $ ProcCoord21      : num  -0.075 -0.0745 -0.0862 -0.0886 -0.0877 ...
+##  $ ProcCoord22      : num  -0.0957 -0.0976 -0.0951 -0.095 -0.0994 ...
+##  $ ProcCoord23      : num  -0.309 -0.313 -0.319 -0.317 -0.329 ...
+##  $ ProcCoord24      : num  0.169 0.168 0.161 0.16 0.157 ...
+##  $ ProcCoord25      : num  -0.482 -0.478 -0.477 -0.476 -0.473 ...
+##  $ ProcCoord26      : num  0.0515 0.0535 0.0499 0.0483 0.0493 ...
+##  $ ProcCoord27      : num  -0.458 -0.456 -0.454 -0.456 -0.453 ...
+##  $ ProcCoord28      : num  -0.0352 -0.0333 -0.0323 -0.031 -0.0243 ...
+##  $ ProcCoord29      : num  -0.172 -0.174 -0.173 -0.174 -0.174 ...
+##  $ ProcCoord30      : num  -0.184 -0.185 -0.179 -0.181 -0.176 ...
+</code></pre>
+
+<h3>Extracting the principal components</h3>
+
+<p>We will use <code>prcomp()</code> as this uses singular value decomposition which is a bit more robust than eigendecomposition. </p>
+
+<pre><code class="r">wings_pc &lt;- prcomp(wings[, 9:38])
+summary(wings_pc)
+</code></pre>
+
+<pre><code>## Importance of components:
+##                           PC1     PC2     PC3     PC4     PC5     PC6
+## Standard deviation     0.0108 0.00842 0.00752 0.00648 0.00582 0.00507
+## Proportion of Variance 0.2780 0.16731 0.13353 0.09910 0.07996 0.06077
+## Cumulative Proportion  0.2780 0.44531 0.57885 0.67795 0.75791 0.81868
+##                           PC7     PC8     PC9    PC10    PC11    PC12
+## Standard deviation     0.0035 0.00338 0.00288 0.00267 0.00247 0.00225
+## Proportion of Variance 0.0289 0.02704 0.01963 0.01688 0.01438 0.01200
+## Cumulative Proportion  0.8476 0.87460 0.89423 0.91111 0.92548 0.93748
+##                           PC13    PC14    PC15    PC16    PC17    PC18
+## Standard deviation     0.00204 0.00199 0.00178 0.00172 0.00153 0.00141
+## Proportion of Variance 0.00986 0.00940 0.00748 0.00700 0.00556 0.00467
+## Cumulative Proportion  0.94734 0.95673 0.96421 0.97122 0.97678 0.98145
+##                           PC19    PC20    PC21    PC22     PC23    PC24
+## Standard deviation     0.00126 0.00114 0.00111 0.00102 0.000907 0.00088
+## Proportion of Variance 0.00376 0.00306 0.00291 0.00248 0.001940 0.00183
+## Cumulative Proportion  0.98521 0.98828 0.99119 0.99366 0.995610 0.99744
+##                            PC25    PC26     PC27     PC28     PC29
+## Standard deviation     0.000814 0.00065 5.39e-09 2.98e-10 2.81e-10
+## Proportion of Variance 0.001560 0.00100 0.00e+00 0.00e+00 0.00e+00
+## Cumulative Proportion  0.999000 1.00000 1.00e+00 1.00e+00 1.00e+00
+##                            PC30
+## Standard deviation     2.73e-10
+## Proportion of Variance 0.00e+00
+## Cumulative Proportion  1.00e+00
+</code></pre>
+
+<pre><code class="r">head(wings_pc$x[, 1:26])  # All of the variables we need
+</code></pre>
+
+<pre><code>##            PC1        PC2        PC3       PC4        PC5       PC6
+## [1,]  0.011070 -0.0074440  0.0134332 -0.013453  0.0012779  0.008113
+## [2,]  0.007639 -0.0067695  0.0124251 -0.006600  0.0020827  0.006221
+## [3,] -0.003166 -0.0004478  0.0001809 -0.005185 -0.0007805 -0.002859
+## [4,] -0.002419 -0.0022569 -0.0046148 -0.002972 -0.0016012 -0.003358
+## [5,] -0.012588  0.0056047  0.0008588  0.005268 -0.0018362 -0.001347
+## [6,] -0.015720  0.0051138 -0.0053862  0.006833 -0.0059565 -0.004863
+##            PC7        PC8       PC9       PC10      PC11       PC12
+## [1,]  0.002699  4.014e-03 -0.001773  0.0078021  0.003272  9.673e-04
+## [2,]  0.002238  4.119e-03  0.001531  0.0046466  0.001639 -4.841e-05
+## [3,]  0.001188  2.358e-03 -0.004367  0.0017926 -0.003163  1.408e-04
+## [4,]  0.002299 -3.694e-05 -0.004084  0.0022248 -0.003433  1.116e-03
+## [5,] -0.003676 -3.260e-03 -0.003028  0.0025903 -0.001859  2.942e-04
+## [6,] -0.004221 -1.911e-03  0.001883 -0.0008215 -0.002413  7.454e-05
+##            PC13       PC14       PC15       PC16       PC17       PC18
+## [1,]  0.0005957 -0.0016598 -0.0005507  5.200e-04  0.0004744  1.117e-03
+## [2,]  0.0024150 -0.0009685 -0.0008530  8.252e-04 -0.0012561 -5.657e-04
+## [3,]  0.0008143  0.0003967  0.0011783 -1.489e-03  0.0022350  8.649e-04
+## [4,]  0.0018286  0.0017987 -0.0010462  6.860e-04  0.0033499  1.965e-03
+## [5,] -0.0012558 -0.0014640  0.0014623  7.427e-05 -0.0013443  1.852e-04
+## [6,] -0.0019348 -0.0031586  0.0005488  1.059e-03 -0.0018435 -5.414e-06
+##            PC19       PC20       PC21       PC22       PC23       PC24
+## [1,] -0.0004079 -0.0008209 -0.0002909  0.0006315 -5.770e-04  0.0007675
+## [2,]  0.0002205 -0.0029924  0.0002370 -0.0014635  8.130e-04  0.0011403
+## [3,]  0.0001877 -0.0005082 -0.0004081  0.0006695 -2.964e-04 -0.0012019
+## [4,] -0.0002751 -0.0017065 -0.0001227  0.0001086  1.145e-04 -0.0005314
+## [5,] -0.0006763  0.0006450 -0.0016224 -0.0017930 -8.994e-05  0.0006803
+## [6,]  0.0006898 -0.0006194 -0.0014567 -0.0001087  9.250e-04  0.0006271
+##            PC25       PC26
+## [1,]  7.969e-04 -0.0003434
+## [2,]  9.106e-04 -0.0011449
+## [3,] -1.647e-04 -0.0001115
+## [4,] -3.311e-04 -0.0002310
+## [5,] -5.659e-05  0.0001270
+## [6,] -8.437e-04  0.0001708
+</code></pre>
+
+<pre><code class="r">wings &lt;- data.frame(wings, wings_pc$x[, 1:26])  # appended the PCs
+</code></pre>
+
+<h3>Back to the important stuff</h3>
+
+<p>In particular we are interested in how many observations we have for each sex.</p>
+
+<pre><code class="r">tab1 &lt;- table(wings$Sex)
+tab1
+</code></pre>
+
+<pre><code>## 
+##   F   M 
+## 583 405
+</code></pre>
+
+<p>So we have 583 females and 405 males in this data set. For subsetting we want to use ~2/3 for the training set and ~1/3 for test set, so 389 for females and 270 for males. We will do this using the <code>strata()</code> in the sampling library.</p>
+
+<pre><code class="r">wings_strata &lt;- strata(wings, stratanames = c(&quot;Sex&quot;), method = &quot;srswor&quot;, size = c(round(tab1[1] * 
+    (2/3)), round(tab1[2] * (2/3))))
+
+names(wings_strata)
+</code></pre>
+
+<pre><code>## [1] &quot;Sex&quot;     &quot;ID_unit&quot; &quot;Prob&quot;    &quot;Stratum&quot;
+</code></pre>
+
+<p><code>ID_unit</code> provides the row number. We could have also done this with the <code>sample(,replace=FALSE)</code> by specifying probabilities, and accounting for both sexes, but this should be easier. To create the training and test sets we will utilize the index for matching observations using <code>ID_unit</code>.</p>
+
+<pre><code class="R subsetting">wings_2 &lt;- wings[, c(3, 39:64)] # Just extracting the variables needed for this tutorial
+wings_training &lt;- wings_2[rownames(wings_2) %in% wings_strata$ID_unit, ]
+wings_test &lt;- wings_2[!rownames(wings_2) %in% wings_strata$ID_unit, ] # notice the &#39;!&#39;
+nrow(wings_training)
+nrow(wings_test)
+nrow(wings)
+</code></pre>
+
+<h2>linear discriminant analysis.</h2>
+
+<p>I am running the lda a bit different from how I performed it in the previous tutorial. Instead of writing out the left and right hand sides of the model, I am going to do it all internal to the call to <code>lda()</code>. </p>
+
+<p>We start by running this on our training set as follows. Note we had to set the tolerance pretty low as the matrix was difficult to invert.</p>
+
+<pre><code class="r">linDiscrim_1 &lt;- lda(formula = Sex ~ ., data = wings_training, tol = 1e-04, CV = FALSE)
+</code></pre>
+
+<p>We can ask which ones did lda classify correctly, as compared to the true sex. We can check this using a table, which will make this easier to see and use. Note <code>CV=FALSE</code> needs to be set in <code>lda()</code> for this approach to work. Not sure why they set it up that way. Does not really matter since we do not want to use 1-Fold cross validation.</p>
+
+<pre><code class="r">lda_training_table &lt;- table(actual = wings_training$Sex, predicted = predict(linDiscrim_1, 
+    newdata = wings_training)$class)
+lda_training_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 368  21
+##      M  17 253
+</code></pre>
+
+<p>Which results in 94.2337 percent correct classification.</p>
+
+<p>How about for the training set? We do it almost identically in terms of generating the table.</p>
+
+<pre><code class="r">lda_test_table &lt;- table(actual = wings_test$Sex, predicted = predict(linDiscrim_1, 
+    newdata = wings_test)$class)
+lda_test_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 187   7
+##      M   7 128
+</code></pre>
+
+<p>Which results in 95.7447 percent correct classification. So it seems like our linear discriminant classifier did pretty well to start with.</p>
+
+<h2>quadratic discriminant analysis</h2>
+
+<p>Now we move on to quadratic discriminant analysis, with the <code>qda()</code> in the MASS library. This has almost the same function call. Indeed many of the functions we will use for classification do.</p>
+
+<pre><code class="r">qda_1 &lt;- qda(formula = Sex ~ ., data = wings_training, tol = 1e-04)
+qda_training_table &lt;- table(actual = wings_training$Sex, predicted = predict(qda_1, 
+    newdata = wings_training)$class)
+qda_training_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 377  12
+##      M  25 245
+</code></pre>
+
+<pre><code class="r">
+qda_test_table &lt;- table(actual = wings_test$Sex, predicted = predict(qda_1, 
+    newdata = wings_test)$class)
+qda_test_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 186   8
+##      M  15 120
+</code></pre>
+
+<p>Which results in 94.3854 percent correct classification for the training data and 93.0091 percent correct classification for the test data.</p>
+
+<h2>Flexible discriminant analysis (FDA)</h2>
+
+<p>This uses a non-parametric regression instead of the &#39;linear&#39; regression type approach in lda. We will use the <code>fda()</code> function in the mda library. Otherwise the syntax is similar.</p>
+
+<pre><code class="r">fda_1 &lt;- fda(formula = Sex ~ ., data = wings_training)
+fda_1
+</code></pre>
+
+<pre><code>## Call:
+## fda(formula = Sex ~ ., data = wings_training)
+## 
+## Dimension: 1 
+## 
+## Percent Between-Group Variance Explained:
+##  v1 
+## 100 
+## 
+## Degrees of Freedom (per dimension): 27 
+## 
+## Training Misclassification Error: 0.05766 ( N = 659 )
+</code></pre>
+
+<pre><code class="r">fda_1$confusion
+</code></pre>
+
+<pre><code>##          true
+## predicted   F   M
+##         F 368  17
+##         M  21 253
+## attr(,&quot;error&quot;)
+## [1] 0.05766
+</code></pre>
+
+<pre><code class="r">fda_training_table &lt;- table(actual = wings_training$Sex, predicted = predict(fda_1, 
+    newdata = wings_training, type = &quot;class&quot;))
+fda_training_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 368  21
+##      M  17 253
+</code></pre>
+
+<pre><code class="r">
+fda_test_table &lt;- table(actual = wings_test$Sex, predicted = predict(fda_1, 
+    newdata = wings_test, type = &quot;class&quot;))
+fda_test_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 187   7
+##      M   7 128
+</code></pre>
+
+<p>Which results in 94.2337 percent correct classification for the training data and 95.7447 percent correct classification for the test data.</p>
+
+<h2>mixture discrimant analysis</h2>
+
+<p><code>mda()</code> is used.</p>
+
+<pre><code class="r">mda_1 &lt;- mda(formula = Sex ~ ., data = wings_training)
+mda_1
+</code></pre>
+
+<pre><code>## Call:
+## mda(formula = Sex ~ ., data = wings_training)
+## 
+## Dimension: 5 
+## 
+## Percent Between-Group Variance Explained:
+##     v1     v2     v3     v4     v5 
+##  61.72  82.47  93.60  98.69 100.00 
+## 
+## Degrees of Freedom (per dimension): 27 
+## 
+## Training Misclassification Error: 0.05463 ( N = 659 )
+## 
+## Deviance: 176.1
+</code></pre>
+
+<pre><code class="r">mda_1$confusion
+</code></pre>
+
+<pre><code>##          true
+## predicted   F   M
+##         F 371  18
+##         M  18 252
+## attr(,&quot;error&quot;)
+## [1] 0.05463
+</code></pre>
+
+<pre><code class="r">mda_training_table &lt;- table(actual = wings_training$Sex, predicted = predict(mda_1, 
+    newdata = wings_training))
+mda_training_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 371  18
+##      M  18 252
+</code></pre>
+
+<pre><code class="r">
+mda_test_table &lt;- table(actual = wings_test$Sex, predicted = predict(mda_1, 
+    newdata = wings_test))
+mda_test_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 187   7
+##      M   7 128
+</code></pre>
+
+<p>Which results in 94.5372 percent correct classification for the training data and 95.7447 percent correct classification for the test data.</p>
+
+<h2>k nearest neighbours</h2>
+
+<p>Using the <code>knn()</code>. The <code>k=1</code> specifies the number of nearest neighbours to use (defaults to one). Important to tune this. Looks like you need to make sure that only the numeric parts enter.</p>
+
+<pre><code class="r">wings_knn &lt;- knn(train = wings_training[, -1], test = wings_test[, -1], cl = wings_training$Sex, 
+    k = 1, prob = TRUE)
+summary(wings_knn)
+</code></pre>
+
+<pre><code>##   F   M 
+## 197 132
+</code></pre>
+
+<pre><code class="r">
+table_knn &lt;- table(predicted = wings_knn, actual = wings_test$Sex)
+table_knn
+</code></pre>
+
+<pre><code>##          actual
+## predicted   F   M
+##         F 182  15
+##         M  12 120
+</code></pre>
+
+<p>Which means we get 91.7933, which is much lower than with other methods.</p>
+
+<h3>Trying a different k</h3>
+
+<p>Let us try a different value of &#39;k&#39; such as k=5. I am not sure (yet) whether there is an automated way to find the best k, but we could always write a for loop if need be.</p>
+
+<pre><code class="r">wings_knn_k5 &lt;- knn(train = wings_training[, -1], test = wings_test[, -1], cl = wings_training$Sex, 
+    k = 5, prob = TRUE)
+summary(wings_knn_k5)
+</code></pre>
+
+<pre><code>##   F   M 
+## 203 126
+</code></pre>
+
+<pre><code class="r">
+table_knn_k5 &lt;- table(predicted = wings_knn_k5, actual = wings_test$Sex)
+table_knn_k5
+</code></pre>
+
+<pre><code>##          actual
+## predicted   F   M
+##         F 183  20
+##         M  11 115
+</code></pre>
+
+<p>Which means we get 90.5775 percent. Still not great.</p>
+
+<h2>Bagging</h2>
+
+<p>Using the <code>bagging()</code> in the <code>adabag</code> library. This is a bit slow.</p>
+
+<pre><code class="r">bag_1 &lt;- bagging(formula = Sex ~ ., data = wings_training)
+
+bag_training_table &lt;- table(actual = wings_training$Sex, predicted = predict(bag_1, 
+    newdata = wings_training)$class)
+bag_training_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 361  28
+##      M  22 248
+</code></pre>
+
+<pre><code class="r">
+bag_test_table &lt;- table(actual = wings_test$Sex, predicted = predict(bag_1, 
+    newdata = wings_test)$class)
+bag_test_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 171  23
+##      M  22 113
+</code></pre>
+
+<p>Which results in 92.4127 percent correct classification for the training data and 86.3222 percent correct classification for the test data.</p>
+
+<h2>boosting</h2>
+
+<p>Using the <code>ada()</code> in the <code>ada</code> library</p>
+
+<pre><code class="r">boo_1 &lt;- ada(formula = Sex ~ ., data = wings_training, loss = &quot;logistic&quot;)
+
+boo_1
+</code></pre>
+
+<pre><code>## Call:
+## ada(Sex ~ ., data = wings_training, loss = &quot;logistic&quot;)
+## 
+## Loss: logistic Method: discrete   Iteration: 50 
+## 
+## Final Confusion Matrix for Data:
+##           Final Prediction
+## True value   F   M
+##          F 387   2
+##          M   4 266
+## 
+## Train Error: 0.009 
+## 
+## Out-Of-Bag Error:  0.047  iteration= 49 
+## 
+## Additional Estimates of number of iterations:
+## 
+## train.err1 train.kap1 
+##         50         50
+</code></pre>
+
+<pre><code class="r">
+boo_training_table &lt;- table(actual = wings_training$Sex, predicted = predict(boo_1, 
+    newdata = wings_training))
+boo_training_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 387   2
+##      M   4 266
+</code></pre>
+
+<pre><code class="r">
+boo_test_table &lt;- table(actual = wings_test$Sex, predicted = predict(boo_1, 
+    newdata = wings_test))
+boo_test_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 178  16
+##      M  13 122
+</code></pre>
+
+<p>Which results in 99.0895 percent correct classification for the training data and 91.1854 percent correct classification for the test data.</p>
+
+<h2>Neural networks</h2>
+
+<p><code>nnet()</code> in <code>nnet</code> library.</p>
+
+<pre><code class="r">nnet_1 &lt;- nnet(formula = Sex ~ ., data = wings_training, size = 10, decay = 0)
+</code></pre>
+
+<pre><code>## # weights:  281
+## initial  value 517.724579 
+## iter  10 value 219.371612
+## iter  20 value 157.244571
+## iter  30 value 109.183875
+## iter  40 value 97.961447
+## iter  50 value 91.664049
+## iter  60 value 88.864830
+## iter  70 value 87.449315
+## iter  80 value 84.159023
+## iter  90 value 78.857635
+## iter 100 value 74.015248
+## final  value 74.015248 
+## stopped after 100 iterations
+</code></pre>
+
+<pre><code class="r">
+nnet_training_table &lt;- table(actual = wings_training$Sex, predicted = predict(nnet_1, 
+    type = &quot;class&quot;))
+nnet_training_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 372  17
+##      M  14 256
+</code></pre>
+
+<pre><code class="r">
+nnet_test_table &lt;- table(actual = wings_test$Sex, predicted = predict(nnet_1, 
+    newdata = wings_test, type = &quot;class&quot;))
+nnet_test_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 183  11
+##      M  12 123
+</code></pre>
+
+<p>Which results in 95.2959 percent correct classification for the training data and 93.0091 percent correct classification for the test data. It is important to evaluate some of the tuning parameters for this approach.</p>
+
+<h2>Support vector machines (SVMs)</h2>
+
+<p>Using the <code>svm()</code> in the <code>e1071</code> library.</p>
+
+<pre><code class="r">wings_svm &lt;- svm(Sex ~ ., data = wings_training)
+
+svm_training_table &lt;- table(actual = wings_training$Sex, predicted = predict(wings_svm, 
+    type = &quot;class&quot;))
+svm_training_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 383   6
+##      M   6 264
+</code></pre>
+
+<pre><code class="r">
+svm_test_table &lt;- table(actual = wings_test$Sex, predicted = predict(wings_svm, 
+    newdata = wings_test, type = &quot;class&quot;))
+svm_test_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 183  11
+##      M   7 128
+</code></pre>
+
+<p>Which results in 98.1791 percent correct classification for the training data and 94.5289 percent correct classification for the test data. It is important to evaluate some of the tuning parameters for this approach.</p>
+
+<h2>random forests</h2>
+
+<p>Using the <code>randomForest()</code> in the <code>randomForest</code> library.</p>
+
+<pre><code class="r">wings_rf &lt;- randomForest(Sex ~ ., data = wings_training)
+wings_rf
+</code></pre>
+
+<pre><code>## 
+## Call:
+##  randomForest(formula = Sex ~ ., data = wings_training) 
+##                Type of random forest: classification
+##                      Number of trees: 500
+## No. of variables tried at each split: 5
+## 
+##         OOB estimate of  error rate: 11.23%
+## Confusion matrix:
+##     F   M class.error
+## F 350  39      0.1003
+## M  35 235      0.1296
+</code></pre>
+
+<pre><code class="r">
+rf_training_table &lt;- table(actual = wings_training$Sex, predicted = predict(wings_rf, 
+    type = &quot;class&quot;))
+rf_training_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 350  39
+##      M  35 235
+</code></pre>
+
+<pre><code class="r">
+rf_test_table &lt;- table(actual = wings_test$Sex, predicted = predict(wings_rf, 
+    newdata = wings_test, type = &quot;class&quot;))
+rf_test_table
+</code></pre>
+
+<pre><code>##       predicted
+## actual   F   M
+##      F 180  14
+##      M  16 119
+</code></pre>
+
+<p>Which results in 88.7709 percent correct classification for the training data and 90.8815 percent correct classification for the test data. It is important to evaluate some of the tuning parameters for this approach.</p>
+
+</body>
+
+</html>
