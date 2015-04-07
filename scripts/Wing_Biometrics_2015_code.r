@@ -28,23 +28,45 @@ require(plyr)
 #1.
 #########################################################################################
 #entering all 4X Olympus wing data, with subsetting
-wings <- read.table("../data/Olympus_4X_coords.tsv", h=T) #all wings
+wings <- read.table("../data/Olympus_4X_coords.tsv", h=T) #all olympus 4X wings
 sam_wings <- data.frame( wings[ wings$genotype == "samw" ,], row.names=c(1:416) ) #sam wings, both sexes
 left_all_wings    <- data.frame( wings[ wings$side == "L" ,], row.names=c(1:1130) ) #left wings only
 left_sam_wings    <- data.frame( wings[ wings$genotype == "samw" & wings$side == "L",], row.names=c(1:208) ) #left sam wings only
 left_female_wings <- data.frame( wings[ wings$sex == "F" & wings$side == "L",], row.names=c(1:559) ) #left female wings only
 
 #wings from other datasets
+all_wings <- read.table("../data/all_wings.tsv", h = T)
 wings_olympus_2x <- read.table("../data/Olympus_2X_coords.tsv", h=T)
 wings_leica_4x <- read.table("../data/Leica_4X_coords.tsv", h=T)
 wings_leica_2x <- read.table("../data/Leica_2X_coords.tsv", h=T)
+all_wings_sam <- data.frame(all_wings[all_wings$genotype == "samw" ,], row.names=c(1:1638) )
 o2x_sam_wings <- data.frame(wings_olympus_2x[wings_olympus_2x$genotype == "samw" ,], row.names=c(1:413) ) 
 l4x_sam_wings <- data.frame(wings_leica_4x[wings_leica_4x$genotype == "samw" ,], row.names=c(1:398) )
 l2x_sam_wings <- data.frame(wings_leica_2x[wings_leica_2x$genotype == "samw" ,], row.names=c(1:411) )
 
+all_wings_oly <- data.frame(all_wings[all_wings$microscope == "oly" ,], row.names = c(1:4525))
+all_wings_oly4X <- data.frame(all_wings_oly[all_wings_oly$magnification == "4X" ,], row.names = c(1:2264))
+all_wings_oly4X_sam <- data.frame(all_wings_oly4X[all_wings_oly4X$genotype == "samw" ,], row.names = c(1:416))
+all_wings_oly2X <- data.frame(all_wings_oly[all_wings_oly$magnification == "2X" ,], row.names = c(1:2261))
+all_wings_oly2X_sam <- data.frame(all_wings_oly2X[all_wings_oly2X$genotype == "samw" ,], row.names = c(1:413))
+all_wings_lei <- data.frame(all_wings[all_wings$microscope == "lei" ,], row.names = c(1:4422))
+all_wings_lei4X <- data.frame(all_wings_lei[all_wings_lei$magnification == "4X" ,], row.names = c(1:2165))
+all_wings_lei4X_sam <- data.frame(all_wings_lei4X[all_wings_lei4X$genotype == "samw" ,], row.names = c(1:398))
+all_wings_lei2X <- data.frame(all_wings_lei[all_wings_lei$magnification == "2X" ,], row.names = c(1:2257))
+all_wings_4X <- data.frame(all_wings[all_wings$magnification == "4X" ,], row.names = c(1:4429))
+all_wings_4Xsam <- data.frame(all_wings_4X[all_wings_4X$genotype == "samw" ,], row.names = c(1:814))
+all_wings_2X <- data.frame(all_wings[all_wings$magnification == "2X" ,], row.names = c(1:4518))
+
 ##this creates a second dataframe, with left and right wings from individual flies averaged into one value
 wing_average <- aggregate( wings[,9:105], list( ID=wings$ID, genotype=wings$genotype, sex=wings$sex ), mean)
 sam_wing_average <- aggregate( sam_wings[,9:105], list( ID=sam_wings$ID, genotype=sam_wings$genotype, sex=sam_wings$sex ), mean)
+#averaging for combined datasets
+all_wings_average <- aggregate( all_wings[,9:105], list( ID=all_wings$ID, genotype=all_wings$genotype, sex=all_wings$sex ), mean)
+all_wings_sam_average <- aggregate( all_wings_sam[,9:105], list( ID=all_wings_sam$ID, genotype=all_wings_sam$genotype, sex=all_wings_sam$sex ), mean)
+all_wings_4Xsam_average <- aggregate( all_wings_4Xsam[,9:105], list( ID=all_wings_4Xsam$ID, genotype=all_wings_4Xsam$genotype, sex=all_wings_4Xsam$sex ), mean)
+all_wings_oly4Xsam_average <- aggregate( all_wings_oly4X_sam[,9:105], list( ID=all_wings_oly4X_sam$ID, genotype=all_wings_oly4X_sam$genotype, sex=all_wings_oly4X_sam$sex ), mean)
+all_wings_oly2Xsam_average <- aggregate( all_wings_oly2X_sam[,9:105], list( ID=all_wings_oly2X_sam$ID, genotype=all_wings_oly2X_sam$genotype, sex=all_wings_oly2X_sam$sex ), mean)
+all_wings_lei4Xsam_average <- aggregate( all_wings_lei4X_sam[,9:105], list( ID=all_wings_lei4X_sam$ID, genotype=all_wings_lei4X_sam$genotype, sex=all_wings_lei4X_sam$sex ), mean)
 #averaging for other datasets
 wing_average_olympus_2x <- aggregate( wings_olympus_2x[,9:105], list( ID=wings_olympus_2x$ID, genotype=wings_olympus_2x$genotype, sex=wings_olympus_2x$sex ), mean)
 wing_average_leica_4x <- aggregate( wings_leica_4x[,9:105], list( ID=wings_leica_4x$ID, genotype=wings_leica_4x$genotype, sex=wings_leica_4x$sex ), mean)
@@ -66,10 +88,33 @@ sam_average_wings <- data.frame(sam_wing_average, sam_wings_mean_pc$x[,1:58])
 
 
 #appending PCs to dataframe for wings from other datasets
+
+#combined datasets
 #all wings
+all_wings_mean_pc <- prcomp(all_wings_average[,4:99])
+all_wings_average_wings <- data.frame(all_wings_average, all_wings_mean_pc$x[,1:58])
+#all sam wings
+all_wings_sam_mean_pc <- prcomp(all_wings_sam_average[,4:99])
+all_wings_sam_average_wings <- data.frame(all_wings_sam_average, all_wings_sam_mean_pc$x[,1:58])
+#all 4X sam wings
+all_wings_4Xsam_average_mean_pc <- prcomp(all_wings_4Xsam_average[,4:99])
+all_4Xsam <- data.frame(all_wings_4Xsam_average, all_wings_4Xsam_average_mean_pc$x[,1:58])
+#all oly4X sam wings
+all_wings_oly4Xsam_average_mean_pc <- prcomp(all_wings_oly4Xsam_average[,4:99])
+all_oly4Xsam <- data.frame(all_wings_oly4Xsam_average, all_wings_oly4Xsam_average_mean_pc$x[,1:58])
+#all oly2X sam wings
+all_wings_oly2Xsam_average_mean_pc <- prcomp(all_wings_oly2Xsam_average[,4:99])
+all_oly2Xsam <- data.frame(all_wings_oly2Xsam_average, all_wings_oly2Xsam_average_mean_pc$x[,1:58])
+#all lei4X sam wings
+all_wings_lei4Xsam_average_mean_pc <- prcomp(all_wings_lei4Xsam_average[,4:99])
+all_lei4Xsam <- data.frame(all_wings_lei4Xsam_average, all_wings_lei4Xsam_average_mean_pc$x[,1:58])
+
+
+#individual datasets
+#olympus 2x wings
 olympus_2x_wings_mean_pc <- prcomp(wing_average_olympus_2x[,4:99])
 olympus_2x_average_wings <- data.frame(wing_average_olympus_2x, olympus_2x_wings_mean_pc$x[,1:58])
-#sam wings
+#sam olympus 2x wings
 sam_olympus_2x_wings_mean_pc <- prcomp(sam_wing_average_olympus_2x[,4:99])
 olympus_2x_sam_average_wings <- data.frame(sam_wing_average_olympus_2x, sam_olympus_2x_wings_mean_pc$x[,1:58])
 #all wings
@@ -142,7 +187,13 @@ tab_sam
 tab_a_sam
 
 #tables for sex prediction - other datasets
-#all averaged wings
+#combined datasets
+tab_all <- table(all_wings_average$sex)
+tab_all_4Xsam <- table(all_wings_4Xsam_average$sex)
+tab_alloly4Xsam <- table(all_wings_oly4Xsam_average$sex)
+tab_alloly2Xsam <- table(all_wings_oly2Xsam_average$sex)
+tab_alllei4Xsam <- table(all_wings_lei4Xsam_average$sex)
+#individual datasets
 tabwo2x <- table(olympus_2x_average_wings$sex)
 tabwl4x <- table(leica_4x_average_wings$sex)
 tabwl2x <- table(leica_2x_average_wings$sex)
@@ -374,10 +425,29 @@ lda_score_CI_sex_leica4x <- resample_default(lda_repeat_function_sex, leica_4x_a
 lda_score_CI_sex_leica4x
 #Leica 2X
 lda_score_CI_sex_leica2x <- resample_default(lda_repeat_function_sex, leica_2x_average_wings, tab_a_wl2x, 5) 
-lda_score_CI_sex_leica2x
+lda_score_CI_sex_leica2
 
+#using LDA on combined datasets
+#Olympus 4X
+lda_score_CI_sex_oly4x_combined <- resample_default(lda_repeat_function_sex, all_oly4Xsam , tab_alloly4Xsam, 5) 
+lda_score_CI_sex_oly4x_combined
 
 #using an LDA trained on one dataset to classify other datasets
+
+#using combined datasets
+#train with oly4X, test with lei2X
+#THIS values output here seem very unlikely
+lda_alloly4X_alloly2X <- resample_default_compare(compare_lda_repeat_function_sex, all_oly4Xsam, all_oly2Xsam, tab_alloly4Xsam, tab_alloly2Xsam, 5)
+lda_alloly4X_alloly2X
+lda_alloly4X_alllei4X <- resample_default_compare(compare_lda_repeat_function_sex, all_oly4Xsam, all_lei4Xsam, tab_alloly4Xsam, tab_alllei4Xsam, 5)
+lda_alloly4X_alllei4X
+lda_all4X_alloly4X <- resample_default_compare(compare_lda_repeat_function_sex, all_4Xsam, all_oly4Xsam, tab_all_4Xsam, tab_alloly4Xsam, 5)
+lda_all4X_alloly4X
+lda_all4X_alllei4X <- resample_default_compare(compare_lda_repeat_function_sex, all_4Xsam, all_lei4Xsam, tab_all_4Xsam, tab_alllei4Xsam, 5)
+lda_all4X_alllei4X
+
+
+#using individual datasets
 #train with oly4X, test with oly2X
 lda_oly4X_oly2X <- resample_default_compare(compare_lda_repeat_function_sex, sam_average_wings, olympus_2x_average_wings, tab_a_sam, tab_a_wo2x, 5)
 lda_oly4X_oly2X
@@ -387,9 +457,9 @@ lda_oly4X_lei4X
 #train with oly4X, test with lei2X
 lda_oly4X_lei2X <- resample_default_compare(compare_lda_repeat_function_sex, sam_average_wings, leica_2x_average_wings, tab_a_sam, tab_a_wl2x, 5)
 lda_oly4X_lei2X
-
-
-
+#train with lei4X, test with oly4X
+lda_lei4X_oly4X <- resample_default_compare(compare_lda_repeat_function_sex, leica_4x_average_wings, sam_average_wings, tab_a_wl4x, tab_a_sam, 5)
+lda_lei4X_oly4X
 
 
 #Tests of how well various statistical learning methods can classify wings by genotype
@@ -596,7 +666,7 @@ knn_genotype_info <- resample_default(knn_accuracy_loop_genotype, average_wings,
 rf_sex_info <- resample_default(rf_sex_fun, sam_average_wings, tab_a_sam, 5) #best accuracy with 100 trees 
 rf_genotype_info <- resample_default(rf_genotype_fun, average_wings, tabw_g, 5) #best accuracy with 1000 trees
 #support vector machines
-svm_sex_info <- resample_default(svm_sex_fun, sam_average_wings, tab_a_sam, 5 #best k value is 3-5
+svm_sex_info <- resample_default(svm_sex_fun, sam_average_wings, tab_a_sam, 5) #best k value is 3-5
 svm_genotype_info <- resample_default(svm_genotype_fun, average_wings, tabw_g, 5)
 
 
