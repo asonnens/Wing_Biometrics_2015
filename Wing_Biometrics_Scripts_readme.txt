@@ -1,6 +1,6 @@
 Scripts:
 
-Wing_Biometrics_2014.r
+Wing_Biometrics_2015.r
 	Script for analyzing landmark and semi-landmark coordinate data from the Wing Biometrics Database.
 
 Wing_Biometrics_settings.r
@@ -9,10 +9,7 @@ Wing_Biometrics_settings.r
 
 These scripts were both written for R version 3.1.0
 
-These scripts are intended to run on the file wingBiometry_oly_4X_coords.tsv, in the data subfolder.
+These scripts are intended to run on the tsv files in the data subfolder.
 
-Although the information in this file is identical to the information in the file Olympus_4X_coords.tsv, 
-all files in the Landmark_Semilandmark_Coordinates folder have an additional column indicating the dimensions 
-of the splined images.
+Many aspects of these scripts were based off of the training scripts in  Dworkin_machine_learing_in_R_tutorials
 
-Before applying these scripts to other datafiles, check column paramters-- in many cases, they will need to be adjusted by one.

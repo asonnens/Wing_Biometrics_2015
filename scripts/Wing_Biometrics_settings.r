@@ -20,12 +20,34 @@ require(plyr)
 #########################################################################################
  
 
+#1.
+#########################################################################################
+#entering all 4X Olympus wing data, with subsetting
 wings <- read.table("../data/Olympus_4X_coords.tsv", h=T) #all wings
 sam_wings <- data.frame( wings[ wings$genotype == "samw" ,], row.names=c(1:416) ) #sam wings, both sexes
+left_all_wings    <- data.frame( wings[ wings$side == "L" ,], row.names=c(1:1130) ) #left wings only
+left_sam_wings    <- data.frame( wings[ wings$genotype == "samw" & wings$side == "L",], row.names=c(1:208) ) #left sam wings only
+left_female_wings <- data.frame( wings[ wings$sex == "F" & wings$side == "L",], row.names=c(1:559) ) #left female wings only
+
+#wings from other datasets
+wings_olympus_2x <- read.table("../data/Olympus_2X_coords.tsv", h=T)
+wings_leica_4x <- read.table("../data/Leica_4X_coords.tsv", h=T)
+wings_leica_2x <- read.table("../data/Leica_2X_coords.tsv", h=T)
+o2x_sam_wings <- data.frame(wings_olympus_2x[wings_olympus_2x$genotype == "samw" ,], row.names=c(1:413) ) 
+l4x_sam_wings <- data.frame(wings_leica_4x[wings_leica_4x$genotype == "samw" ,], row.names=c(1:398) )
+l2x_sam_wings <- data.frame(wings_leica_2x[wings_leica_2x$genotype == "samw" ,], row.names=c(1:411) )
 
 ##this creates a second dataframe, with left and right wings from individual flies averaged into one value
 wing_average <- aggregate( wings[,9:105], list( ID=wings$ID, genotype=wings$genotype, sex=wings$sex ), mean)
 sam_wing_average <- aggregate( sam_wings[,9:105], list( ID=sam_wings$ID, genotype=sam_wings$genotype, sex=sam_wings$sex ), mean)
+#averaging for other datasets
+wing_average_olympus_2x <- aggregate( wings_olympus_2x[,9:105], list( ID=wings_olympus_2x$ID, genotype=wings_olympus_2x$genotype, sex=wings_olympus_2x$sex ), mean)
+wing_average_leica_4x <- aggregate( wings_leica_4x[,9:105], list( ID=wings_leica_4x$ID, genotype=wings_leica_4x$genotype, sex=wings_leica_4x$sex ), mean)
+wing_average_leica_2x <- aggregate( wings_leica_2x[,9:105], list( ID=wings_leica_2x$ID, genotype=wings_leica_2x$genotype, sex=wings_leica_2x$sex ), mean)
+sam_wing_average_olympus_2x <- aggregate( o2x_sam_wings[,9:105], list( ID=o2x_sam_wings$ID, genotype=o2x_sam_wings$genotype, sex=o2x_sam_wings$sex ), mean)
+sam_wing_average_leica_4x <- aggregate( l4x_sam_wings[,9:105], list( ID=l4x_sam_wings$ID, genotype=l4x_sam_wings$genotype, sex=l4x_sam_wings$sex ), mean)
+sam_wing_average_leica_2x <- aggregate( l2x_sam_wings[,9:105], list( ID=l2x_sam_wings$ID, genotype=l2x_sam_wings$genotype, sex=l2x_sam_wings$sex ), mean)
+
 
 #Append PCs to new dataframe
 #all wings from olympus 4X dataset			   
@@ -38,6 +60,57 @@ sam_wings_mean_pc <- prcomp(sam_wing_average[,4:99])
 sam_average_wings <- data.frame(sam_wing_average, sam_wings_mean_pc$x[,1:58])
 
 
+#appending PCs to dataframe for wings from other datasets
+#all wings
+olympus_2x_wings_mean_pc <- prcomp(wing_average_olympus_2x[,4:99])
+olympus_2x_average_wings <- data.frame(wing_average_olympus_2x, olympus_2x_wings_mean_pc$x[,1:58])
+#sam wings
+sam_olympus_2x_wings_mean_pc <- prcomp(sam_wing_average_olympus_2x[,4:99])
+olympus_2x_sam_average_wings <- data.frame(sam_wing_average_olympus_2x, sam_olympus_2x_wings_mean_pc$x[,1:58])
+#all wings
+leica_4x_wings_mean_pc <- prcomp(wing_average_leica_4x[,4:99])
+leica_4x_average_wings <- data.frame(wing_average_leica_4x, leica_4x_wings_mean_pc$x[,1:58])
+#sam wings
+sam_leica_4x_wings_mean_pc <- prcomp(sam_wing_average_leica_4x[,4:99])
+leica_4x_sam_average_wings <- data.frame(sam_wing_average_leica_4x, sam_leica_4x_wings_mean_pc$x[,1:58])
+#all wings
+leica_2x_wings_mean_pc <- prcomp(wing_average_leica_2x[,4:99])
+leica_2x_average_wings <- data.frame(wing_average_leica_2x, leica_2x_wings_mean_pc$x[,1:58])
+#sam wings
+sam_leica_2x_wings_mean_pc <- prcomp(sam_wing_average_leica_2x[,4:99])
+leica_2x_sam_average_wings <- data.frame(sam_wing_average_leica_2x, sam_leica_2x_wings_mean_pc$x[,1:58])
+
+#appending PCs, including centroid- just olympus 4X dataset				
+#all wings
+wings_mean_pc_cent <- prcomp(wing_average[,4:100])
+summary(wings_mean_pc_cent)
+head(wings_mean_pc_cent$x[,1:58])
+average_wings_cent <- data.frame(wing_average, wings_mean_pc_cent$x[,1:58])
+#averaged sam wings
+sam_wings_mean_pc_cent <- prcomp(sam_wing_average[,4:100])
+sam_average_wings_cent <- data.frame(sam_average_wings, sam_wings_mean_pc_cent$x[,1:58])
+
+#sam wings from olympus 4X dataset 
+#here wings are not averaged, because these subsets are meant for comparison to BioCAT
+sam_pc <- prcomp(sam_wings[,9:104]) #excluding centroid
+sam_data <- data.frame(sam_wings, sam_pc$x[,1:58])
+#left wings, both sexes
+left_wings_pc <- prcomp(left_all_wings[,9:104])
+left_all_wings_data <- data.frame(left_all_wings, left_wings_pc$x[,1:58])
+left_wings_pc_cent <- prcomp(left_all_wings[,9:105])
+left_all_wings_cent <- data.frame(left_all_wings, left_wings_pc_cent$x[,1:58])
+#left wings, females
+left_female_wings_pc <- prcomp(left_female_wings[,9:104])
+left_female_wings_data <- data.frame(left_female_wings, left_female_wings_pc$x[,1:58])
+left_female_wings_pc_cent <- prcomp(left_female_wings[,9:105])
+left_female_wings_cent <- data.frame(left_female_wings, left_female_wings_pc_cent$x[,1:58])
+#left wings, sam
+left_sam_wings_pc <- prcomp(left_sam_wings[,9:104])
+left_sam_wings_data <- data.frame(left_sam_wings, left_sam_wings_pc$x[,1:58])
+left_sam_wings_pc_cent <- prcomp(left_sam_wings[,9:105])
+left_sam_wings_cent <- data.frame(left_sam_wings, left_sam_wings_pc_cent$x[,1:58])
+
+
 #########################################################################################
 #Using morphometric PCs to predict sex and genotype
 #########################################################################################
@@ -45,16 +118,54 @@ sam_average_wings <- data.frame(sam_wing_average, sam_wings_mean_pc$x[,1:58])
 
 #setting tables
 #########################################################################################
-#tables for sex prediction
+#tables for sex prediction - olympus 4X dataset
 tabw <- table(average_wings$sex)
+tabwc <- table(average_wings_cent$sex)
+tablw <- table(left_all_wings_data$sex)
+tablwc <- table(left_all_wings_cent$sex)
+tabls <- table(left_sam_wings_data$sex)
+tablsc <- table(left_sam_wings_cent$sex)
 tab_sam <- table(sam_wings$sex)
+tab_a_sam <- table(sam_average_wings$sex)
+tabw 
+tabwc
+tablw
+tablwc
+tabls
+tablsc
+tab_sam
+tab_a_sam
+
+#tables for sex prediction - other datasets
+#all averaged wings
+tabwo2x <- table(olympus_2x_average_wings$sex)
+tabwl4x <- table(leica_4x_average_wings$sex)
+tabwl2x <- table(leica_2x_average_wings$sex)
+tabwo2x
+tabwl4x
+tabwl2x
+#sam averaged wings
+tab_a_wo2x <- table(olympus_2x_sam_average_wings$sex)
+tab_a_wl4x <- table(leica_4x_sam_average_wings$sex)
+tab_a_wl2x <- table(leica_2x_sam_average_wings$sex)
+tab_a_wo2x
+tab_a_wl4x
+tab_a_wl2x
 
 
-#tables for genotype prediction, all genotypes
+#tables for genotype prediction, all genotypes, - olympus 4X dataset
 tabw_g <- table(average_wings$genotype)
-
+tabwc_g <- table(average_wings_cent$genotype)
+tablw_g <- table(left_female_wings_data$genotype)
+tablwc_g <- table(left_female_wings_cent$genotype)
+tabw_g
+tabwc_g
+tablw_g
+tablwc_g
 #########################################################################################
 
+#testing and training sets for sex-- strata is wrapped in separate function to save space
+#########################################################################################
 strata_2var <- function(dataset, variable_name, variable_table, percentage, variable_pos, dataframe_length = 162){
 #this function stratifies a dataset by two variables, 
 #and makes testing and training sets based on the strata
@@ -69,6 +180,8 @@ strata_2var <- function(dataset, variable_name, variable_table, percentage, vari
   return(my_train_test_info)
 }
 
+#creating testing and training sets, genotype
+#########################################################################################
 strata_5var <- function(dataset, variable_name, variable_table, percentage, variable_pos, dataframe_length = 162){
 #this function stratifies a dataset by five variables, 
 #and makes testing and training sets based on the strata
@@ -86,6 +199,7 @@ strata_5var <- function(dataset, variable_name, variable_table, percentage, vari
   my_train_test_info <- list(my_training, my_testing)
   return(my_train_test_info)
 }
+
 #1.
 #svm settings of interest-- function shape (linear, radial, sigmoid, polynomial)
 #########################################################################################
@@ -169,10 +283,10 @@ resample_settings <- function(function_name, dataset, datatable, reps){
 }
 
 
-svm_genotype_fake_bootstrap <- resample_settings(svm_genotype_fun, average_wings, tabw_g, 100)
+svm_genotype_fake_bootstrap <- resample_settings(svm_genotype_fun, average_wings, tabw_g, 10)
 svm_genotype_fake_bootstrap
 mean(svm_genotype_fake_bootstrap[[2]]) #sigmoid and radial both work, radial works much better
-svm_sex_fake_bootstrap <- resample_settings(svm_sex_fun, sam_average_wings, tab_a_sam, 100)
+svm_sex_fake_bootstrap <- resample_settings(svm_sex_fun, sam_average_wings, tab_a_sam, 10)
 svm_sex_fake_bootstrap #sigmoid consistently tends to win here, but linear and radial also work really well
 mean(svm_sex_fake_bootstrap[[3]])
 
@@ -234,7 +348,7 @@ random_forest_genotype <- function(train_data, test_data){
 
 #function for looping the random forest sex function with different testing/training sets
 rf_sex_fun <- function(dataset, datatable){
-    rf_wings_sex <- strata_2var(dataset, "sex", datatable, 2/3, 2, 158)
+    rf_wings_sex <- strata_2var(dataset, "sex", datatable, 2/3, 3, 158)
 	rf_training <- rf_wings_sex[[1]]
 	rf_test <- rf_wings_sex[[2]]
 	mytest <- random_forest_sex(rf_training, rf_test)
@@ -268,9 +382,9 @@ resample_settings_rf <- function(function_name, dataset, datatable, reps){
 	return(out_list)
 }
 
-rf_list_sex <- resample_settings_rf(rf_sex_fun, sam_data, tab_sam, 100)
+rf_list_sex <- resample_settings_rf(rf_sex_fun, sam_average_wings, tab_a_sam, 10)
 rf_list_sex #100 trees works the best
-rf_list_genotype <- resample_settings_rf(rf_genotype_fun, average_wings, tabw_g, 100)
+rf_list_genotype <- resample_settings_rf(rf_genotype_fun, average_wings, tabw_g, 10)
 rf_list_genotype #1000 trees works the best here
 
 
@@ -280,7 +394,7 @@ rf_list_genotype #1000 trees works the best here
 
 #function that loops across a range of k values, finds the one that produces highest accuracy
 knn_accuracy_loop_sex <- function(dataset, datatable,kvals){ 
-  knn_wings_sex <- strata_2var(dataset, "sex", datatable, 2/3, 2, 158)
+  knn_wings_sex <- strata_2var(dataset, "sex", datatable, 2/3, 3, 158)
   train_set <- knn_wings_sex[[1]]
   test_set <- knn_wings_sex[[2]]
   knn_accuracy_val <- 0
@@ -327,7 +441,7 @@ resample_settings_knn <- function(function_name, dataset, datatable, reps){
 	return(out_list)
 }
 
-knn_sex_info <- resample_settings_knn(knn_accuracy_loop_sex, sam_data, tab_sam, 1000) #best kvalue tends to be between 3-5
-knn_genotype_info <- resample_settings_knn(knn_accuracy_loop_genotype, average_wings, tabw_g, 1000) #best kvalue is ~32
+knn_sex_info <- resample_settings_knn(knn_accuracy_loop_sex, sam_average_wings, tab_a_sam, 10) #best kvalue tends to be between 3-5
+knn_genotype_info <- resample_settings_knn(knn_accuracy_loop_genotype, average_wings, tabw_g, 10) #best kvalue is ~32
 knn_sex_info
 knn_genotype_info
