@@ -1,3 +1,9 @@
+Data:
+The five data files are all in tab seperated format. They can be opened in any text editor, and should easily transfer to spreadsheets. 
+All five files are parsed output from CPR version OI.
+The files Leica_2X_coords.tsv, Leica_4X_coords.tsv, Olympus_2X_coords.tsv, and Olympus_4X_coords.tsv were all superimposed separately in CPR.
+all_wings.tsv represents output from all four datasets, jointly superimposed in CPR. 
+
 Scripts:
 
 Wing_Biometrics_2014.r
