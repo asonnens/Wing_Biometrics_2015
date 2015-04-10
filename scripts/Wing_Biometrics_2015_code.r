@@ -565,7 +565,7 @@ fda_score_CI_genotype <- resample_default(fda_repeat_function_genotype, average_
 fda_score_CI_genotype
 mda_score_CI_genotype <- resample_default(mda_repeat_function_genotype, average_wings, tabw_g, 5) 
 mda_score_CI_genotype
-bagging_score_CI_genotype <- resample_default(bagging_repeat_function_genotype, average_wings, tabw_g, 1000) 
+bagging_score_CI_genotype <- resample_default(bagging_repeat_function_genotype, average_wings, tabw_g, 5) 
 bagging_score_CI_genotype
 nnet_score_CI_genotype <- resample_default(nnet_repeat_function_genotype, average_wings, tabw_g, 5) 
 nnet_score_CI_genotype
@@ -756,6 +756,24 @@ rf_genotype_comparison <- function(dataset, datatable){
 	return(results_list)
 }
 
+#random forest comparison, for genotype, for heatmap
+#only runs on 10 trees- meant for comparison to biocat data
+#outputs confusion matrics
+#no resampling
+rf_genotype_confusion <- function(dataset, datatable){
+    trees = list(1000)
+    rf_wings_genotype <- strata_5var(dataset, "genotype", datatable, 2/3, 1, 162) #different dimensions, not average_wings dataframe
+	rf_training <- rf_wings_genotype[[1]]
+	rf_test <- rf_wings_genotype[[2]]
+	results_list <- list()
+	for (i in trees){
+	    random_forest_model <- randomForest(genotype ~., data = rf_training, ntree = i)
+	    rf_test_table <- table(actual = rf_test$genotype,
+                       predicted = predict(random_forest_model, newdata=rf_test, type="class"))
+		}
+	return(rf_test_table)
+}
+
 #re-sample the 10 trees, 1000 trees random forest comparison functions
 resample_comparison <- function(function_name, dataset, datatable, reps){
 	out_list1 <- list()
@@ -780,7 +798,7 @@ resample_comparison <- function(function_name, dataset, datatable, reps){
 rf_sex_info_left_sam <- resample_comparison(rf_sex_comparison, left_sam_wings_data, tabls, 5) 
 rf_sex_info_left_sam #first result is 10 trees, percentage and error, second result is 1000 trees, percentage and error
 #with centroid
-rf_sex_info_left_sam_centroid <- resample_comparison(rf_sex_comparison, left_sam_wings_cent, tablsc, 1000)
+rf_sex_info_left_sam_centroid <- resample_comparison(rf_sex_comparison, left_sam_wings_cent, tablsc, 5)
 rf_sex_info_left_sam_centroid
 
 #left female wings, for genotype comparisons
@@ -904,6 +922,7 @@ tkv_diff <- colMeans( procoords[ wings_id$genotype == "samw", ] ) - colMeans( pr
 
 ##### Figure 2
 # mean effects of mutation plots
+
 par( mfrow= c(2, 2), mar=c(1,1,1,1))
 WingEffect( meanshape, egfr_diff, egfr_diff, scale.factor=3, winglabel="Egfr"  )
 text( 0, 0.2, paste( "PD=", round(PD(egfr_diff), 4)) )
@@ -919,6 +938,16 @@ text( 0, 0.2, paste( "PD=", round(PD(tkv_diff), 4)) )
 #5. LDA plots
 #########################################################################################
 #plotting LDA results , from training set only
+
+
+
+Names <- c( expression( paste( italic( "Egfr" ))),
+			expression( paste( italic( "mam" ))),
+			"sam",
+			expression( paste( italic( "Star" ))),
+			expression( paste( italic( "tkv" ))) )
+
+
 
 #single LDA on all wings, no repetitions
 #training and test set
@@ -936,24 +965,23 @@ all_lda_test_table
 #accuracy rate
 100*sum(diag(all_lda_test_table)/sum(all_lda_test_table))
 
-
 aLDA <-  data.frame(wings_wg_training, as.matrix(wings_wg_training[,2:59]) %*% linDiscrim_all$scaling ) #matrix-multiplying the scaling matrix by the LM's gives a vector of individual LD 'scores' for each LDA
 genocols <- c( "#00008B99", "#B8860B99", "#00000099", "#00640099", "#8B000099")
 genopch <- c( 21, 25, 23, 24, 22 )
-par( mfrow= c(1, 1), mar=c(5,5,1,1))
+par( mfrow= c(1, 2), mar=c(5,5,1,1))
 plot( aLDA$LD1, aLDA$LD2, pch=genopch[aLDA$genotype], bg=genocols[aLDA$genotype], col=genocols[aLDA$genotype], xlab = "1st Discriminant Function", ylab = "2nd Discriminant Function", cex=1.5 )
 # x = lda 1, y = lda2
-legend( -7, 4.7, bty = "n", pch = genopch, pt.bg=c("#00008B", "#B8860B", "#000000", "#006400", "#8B0000"), col=c("#00008B", "#B8860B", "#000000", "#006400", "#8B0000"), c("Egfr", "mam", "sam", "star", "tkv"), xjust=0 )
+legend( -7, 4.7, bty = "n", pch = genopch, pt.bg=c("#00008B", "#B8860B", "#000000", "#006400", "#8B0000"), col=c("#00008B", "#B8860B", "#000000", "#006400", "#8B0000"), Names, xjust=0 )
 
 
 #plotting LDA results, test set only
 bLDA <-  data.frame(wings_wg_test, as.matrix(wings_wg_test[,2:59]) %*% linDiscrim_all$scaling ) #matrix-multiplying the scaling matrix by the LM's gives a vector of individual LD 'scores' for each LDA
 genocols <- c( "#00008B99", "#B8860B99", "#00000099", "#00640099", "#8B000099")
 genopch <- c( 21, 25, 23, 24, 22 )
-par( mfrow= c(1, 1), mar=c(5,5,1,1))
-plot( bLDA$LD1, bLDA$LD2, pch=genopch[bLDA$genotype], col=genocols[bLDA$genotype], bg=genocols[bLDA$genotype], xlab = "1st Discriminant Function", ylab = "2nd Discriminant Function", cex=1.5 ) # x = lda 1, y = lda2
+# par( mfrow= c(1, 1), mar=c(5,5,1,1))
+plot( bLDA$LD1, bLDA$LD2, pch=genopch[bLDA$genotype], col=genocols[bLDA$genotype], bg=genocols[bLDA$genotype], xlab = "1st Discriminant Function", ylab = "2nd Discriminant Function", cex=1.5, xlim=c(-6, 6), ylim=c(-6, 5) ) # x = lda 1, y = lda2
 
-legend(3.6, 4.9, bty = "n", pch = genopch, pt.bg=c("#00008B", "#B8860B", "#000000", "#006400", "#8B0000"), col=c("#00008B", "#B8860B", "#000000", "#006400", "#8B0000"), c("Egfr", "mam", "sam", "star", "tkv"), xjust=0)
+legend(3.6, 4.9, bty = "n", pch = genopch, pt.bg=c("#00008B", "#B8860B", "#000000", "#006400", "#8B0000"), col=c("#00008B", "#B8860B", "#000000", "#006400", "#8B0000"), Names, xjust=0)
 
  
 #6. Heat map plots of confusion matrices
@@ -966,8 +994,8 @@ myHeatMap <- function( dim, names, data, xLab="Actual", yLab="Predicted", Main="
 	abline(v=0:dim+0.5, col="grey")
 	box( lwd=1 )
 	text( 1:dim, rep(dim:1, each=dim), sub('^0$', '',data) )
-	axis(1, at=1:dim, labels=names, cex.axis=0.8, font=3 )
-	axis(2, at=1:dim, labels=rev(names), cex.axis=0.8, las=1, font=3 )
+	axis(1, at=1:dim, labels=names, cex.axis=0.8 )
+	axis(2, at=1:dim, labels=rev(names), cex.axis=0.8, las=1 )
 }
 
 
@@ -981,7 +1009,7 @@ Biocat_RF_10_conf_perc <- (Biocat_RF_10_confusion / rowSums( Biocat_RF_10_confus
 
 
 ### landmark data
-wings_info <- rf_genotype_comparison( left_female_wings_data, tablwc_g)[[3]]
+wings_info <- rf_genotype_confusion( left_female_wings_data, tablwc_g)
 
 wings_info_perc <- 100*( wings_info / rowSums( wings_info ) )
 
@@ -997,26 +1025,48 @@ RF_10_combined
 
 ### code-block for Figure6
 
-layout( matrix( c(1,3,2,3), 2, byrow=T), T)
+layout( matrix( c(1,4,1,4,1,4,2,4,2,4,2,4,3,4), 7, byrow=T), T)
+par( mar=c( 4.1, 4.1, 4.1, 2.1 ))
 
-myHeatMap( dim=5, names=c("Egfr","mam","sam","Star","tkv"), data=round(Biocat_RF_10_conf_perc, 0), Main="Biocat" )
+myHeatMap( dim=5, names=Names, data=round(Biocat_RF_10_conf_perc, 0), Main="Biocat" )
 	mtext( "(a)", 1, 1, at=-.5 )
 
-myHeatMap( dim=5, names=c("Egfr","mam","sam","Star","tkv"), data=round(wings_info_perc, 0), Main="Landmarks" )
+myHeatMap( dim=5, names=Names, data=round(wings_info_perc, 0), Main="Landmarks" )
 	mtext( "(b)", 1, 1, at=-.5 )
+
+# legend
+par( mar=c( 1,4.1,4.1,2.1 ))
+image( 0:5, 0:1, matrix( c(100,80,60,40,20,0), byrow=T ), xaxt='n', yaxt='n', xlab='', ylab='', main="%age correct" )
+text( 0:5, 0.5, c(0,20,40,60,80,100) )
+abline( v=0.5:5.5, col="grey")
+box( lwd=1 )
+par( mar=c( 4.1, 4.1, 4.1, 2.1 ))
 
 myCols <- colorRampPalette(c("#ffffff7f", "#ffff007f", "#ff00007f"), space="rgb")
 
-rotate = function(mat){ t(mat[nrow(mat):1,,drop=FALSE]) }
+rotate <- function(mat){ t(mat[nrow(mat):1,,drop=FALSE]) }
 RF_10_combined_rot <- round( rotate( RF_10_combined ), 0)
 
-image( 1:5, 1:10, RF_10_combined_rot[,10:1], col=myCols(100), xaxt='n', yaxt='n', xlab='Actual', ylab='' )
+bioNames <- c( expression( paste( "biocat_", italic( "Egfr" ))),
+			expression( paste( "biocat_", italic( "mam" ))),
+			"biocat_sam",
+			expression( paste( "biocat_", italic( "Star" ))),
+			expression( paste( "biocat_", italic( "tkv" ))) )
+			
+lmNames <- c( expression( paste( "lm_", italic( "Egfr" ))),
+			expression( paste( "lm_", italic( "mam" ))),
+			"lm_sam",
+			expression( paste( "lm_", italic( "Star" ))),
+			expression( paste( "lm_", italic( "tkv" ))) )
+
+
+image( 1:5, 1:10, RF_10_combined_rot[,10:1], col=myCols(100), xaxt='n', yaxt='n', xlab='Actual', ylab='', main="Combined" )
 		abline(h=0:10+0.5, col="grey")
 		abline(v=0:5+0.5, col="grey")
 		box( lwd=1 )
 		text( 1:5, rep(10:1, each=5), sub('^0$', '', RF_10_combined_rot) )
-	axis(1, at=1:5, labels=c("Egfr","mam","sam","Star","tkv"), cex.axis=0.8, font=3 )
-	axis(2, at=1:10, labels=c( c("lm_Egfr", "lm_mam", "lm_sam", "lm_Star", "lm_tkv"), c("biocat_Egfr", "biocat_mam", "biocat_sam", "biocat_Star", "biocat_tkv")), cex.axis=0.8, las=1, font=3 )
+	axis(1, at=1:5, labels=Names, cex.axis=0.8, font=3 )
+	axis(2, at=1:10, labels=c( lmNames, bioNames ), cex.axis=0.8, las=1, font=3 )
 	mtext( "(c)", 1, 1, at=-.5 )
 	
 
