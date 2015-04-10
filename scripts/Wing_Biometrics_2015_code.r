@@ -1036,7 +1036,7 @@ myHeatMap( dim=5, names=Names, data=round(wings_info_perc, 0), Main="Landmarks" 
 
 # legend
 par( mar=c( 1,4.1,4.1,2.1 ))
-image( 0:5, 0:1, matrix( c(100,80,60,40,20,0), byrow=T ), xaxt='n', yaxt='n', xlab='', ylab='', main="%age correct" )
+image( 0:5, 0:1, matrix( c(100,80,60,40,20,0), byrow=T ), xaxt='n', yaxt='n', xlab='', ylab='', main="% correct" )
 text( 0:5, 0.5, c(0,20,40,60,80,100) )
 abline( v=0.5:5.5, col="grey")
 box( lwd=1 )
@@ -1072,3 +1072,11 @@ image( 1:5, 1:10, RF_10_combined_rot[,10:1], col=myCols(100), xaxt='n', yaxt='n'
 
 
 
+t = seq(-pi, pi, by = 0.01)
+H = 1
+x = H * 0.78 * cos(t/4) * sin(t)
+y = -H * cos(t)
+par(mar = rep(0, 4))
+plot(x, y, type = "l", xlim = c(-1, 1), ylim = c(-1, 1), asp = 1, 
+  col = "goldenrod", lwd = 7, axes = FALSE)
+  text( 0, 0, "Happy Pesach!", col="red", font=3, cex=3 )
