@@ -7,7 +7,7 @@ all_wings.tsv represents output from all four datasets, jointly superimposed in 
 Scripts:
 
 
-Wing_Biometrics_2014.r
+Wing_Biometrics_2015_code.r
 	Script for analyzing landmark and semi-landmark coordinate data from the Wing Biometrics Database.
 
 Wing_Biometrics_settings.r
