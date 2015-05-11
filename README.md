@@ -11,8 +11,11 @@ This repository includes
 2. [Landmark data used for  real study.](https://github.com/DworkinLab/Wing_Biometrics_2015/tree/master/data)
 3. [Some old tutorials, practice data and run throughs](https://github.com/DworkinLab/Wing_Biometrics_2015/tree/master/Dworkin_machine_learning_in_R_tutorials) with practice data for lda, qda.
 4. Maybe some easter eggs..
-5. 
-This work was funded by a[BEACON](beacon-center.org) funded project to Ian Dworkin to generate a database of images from the wings of *Drosophila melanogaster* to be used for biometric analysis. This repository contains scripts, some basic tutorials (for the students doing the project as well as everyone else) as well as landmark data. 
+
+We have extended readme files on the gigascience database (see above), but some short notes about the files are available [here](https://github.com/DworkinLab/Wing_Biometrics_2015/blob/master/Wing_Biometrics_readme.txt).
+
+This work was funded by a [BEACON](beacon-center.org) funded project to Ian Dworkin to generate a database of images from the wings of *Drosophila melanogaster* to be used for biometric analysis.This material is based in part upon work supported by the National Science Foundation under Cooperative Agreement No. DBI-0939454. Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.
+
 
 
 
