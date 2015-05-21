@@ -1,6 +1,6 @@
 This is a repository for with all scripts and data for the paper:
 Anne Sonnenschein; David VanderZee; William R. Pitchers; Sudarshan Chari; Ian Dworkin.(2015). An Image Database of *Drosophila melanogaster* Wings for Phenomic and Biometric analysis. GigaScience. http://dx.doi.org/10.5524/100141.  
-The manuscript is available online (open access) [here](http://dx.doi.org/10.5524/100141)
+The manuscript is available online (open access) [here](http://www.gigasciencejournal.com/content/4/1/25)
 
 All of the raw data (including images, landmark coordinate files, scripts and BioCat settings) are available on GigaDB. The temporary link is here (http://gigadb.org/dataset/view/id/100141/token/9RIJbfKlm1FQMW2e).
 
